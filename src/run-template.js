@@ -7,13 +7,24 @@ export default (
   _module = { exports: {} }
 ) => {
   const code = stripIndent`
-    const __fn__ = async () => {
-      const val = await ${text};
-      // TODO call thunks?
-      return val;
-    }
+    const $util = $require('util');
+    const $fn = async () => {
+      return await ${text};
+    };
 
-    Promise.resolve(__fn__());
+    Promise.resolve($fn()).then(val => {
+      // handle objects
+      if (typeof val === 'object') {
+        return $util.inspect(val);
+      }
+
+      // handle thunks
+      if (typeof val === 'function') {
+        return val();
+      }
+
+      return val;
+    });
   `;
 
   // shallow clone
@@ -22,9 +33,10 @@ export default (
   }};
 
   const ctx = {
-    Promise,
     ...module,
     ...module.exports,
+    Promise: Promise,
+    $require: require,
   };
 
   return vm.runInContext(

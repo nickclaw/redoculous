@@ -7,8 +7,8 @@ export default (
   _module = { exports: {} }
 ) => {
   const code = stripIndent`
-    const __fn__ = async () => { ${text}; };
-    Promise.resolve(__fn__()).return(module);
+    const $fn = async () => { ${text}; };
+    Promise.resolve($fn()).return(module);
   `;
 
   // shallow clone

@@ -31,4 +31,28 @@ describe('runTemplate', () => {
     return runTemplate(raw, module)
       .tap(val => expect(val).to.equal(2));
   });
+
+  it('should handle objects', () => {
+    const module = { exports: { foo: {} } }
+    const raw = 'foo';
+
+    return runTemplate(raw, module)
+      .tap(val => expect(val).to.equal('{}'));
+  });
+
+  it('should handle thunks', () => {
+    const module = { exports: { foo: () => 1 } }
+    const raw = 'foo';
+
+    return runTemplate(raw, module)
+      .tap(val => expect(val).to.equal(1));
+  });
+
+  it('should handle async thunks', () => {
+    const module = { exports: { foo: async () => 1 } }
+    const raw = 'foo';
+
+    return runTemplate(raw, module)
+      .tap(val => expect(val).to.equal(1));
+  });
 });
