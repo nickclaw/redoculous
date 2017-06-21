@@ -6,11 +6,19 @@
 import remark from 'remark';
 import stringify from 'remark-stringify';
 import redoculous from 'redoculous';
+import fs from 'fs';
+
+const path = '/path/to/markdown.md';
+const markdown = fs.readFileSync(path).toString('utf8');
+const initialExports = { foo: 'bar' };  
 
 remark()
-  .use(redoculous)
+  .use(redoculous, {
+    filepath: path,
+    exports: initialExports,
+  })
   .use(stringify)
-  .process(someMarkdown, (err, file) => {
+  .process(markdown, (err, file) => {
     console.log(String(file));
   });
 ```
