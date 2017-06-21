@@ -1,0 +1,4 @@
+{
+  "plugins": ["transform-runtime", "transform-regenerator"],
+  "presets": ["es2015", "stage-1"],
+}
