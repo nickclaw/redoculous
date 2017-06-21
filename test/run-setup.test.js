@@ -18,7 +18,7 @@ describe('runSetup', () => {
     `;
 
     return runSetup(raw)
-      .tap(ex => expect(ex).to.deep.equal({ foo: 'bar' }));
+      .tap(m => expect(m.exports).to.deep.equal({ foo: 'bar' }));
   });
 
   it('should support overriding exports', () => {
@@ -27,7 +27,7 @@ describe('runSetup', () => {
     `;
 
     return runSetup(raw)
-      .tap(ex => expect(ex).to.deep.equal({ foo: 'bar' }));
+      .tap(m => expect(m.exports).to.deep.equal({ foo: 'bar' }));
   });
 
   it('should support require', () => {
@@ -36,7 +36,7 @@ describe('runSetup', () => {
     `;
 
     return runSetup(raw)
-      .tap(ex => expect(ex.lodash).to.equal(_));
+      .tap(m => expect(m.exports.lodash).to.equal(_));
   });
 
   it('should support overriding existing exports', () => {
@@ -46,8 +46,8 @@ describe('runSetup', () => {
     `;
 
     return runSetup(raw, module)
-      .tap(ex => expect(ex === module.exports).to.be.false)
-      .tap(ex => expect(ex).to.deep.equal({
+      .tap(m => expect(m).to.not.equal(module))
+      .tap(m => expect(m.exports).to.deep.equal({
         foo: 1,
         bar: 2,
       }));

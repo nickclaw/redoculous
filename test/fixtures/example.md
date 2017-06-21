@@ -24,3 +24,5 @@ exports.result = await superagent
 ```
 
 The search result is {{result}}
+
+also.. you can use previous exports: {{bar}}
