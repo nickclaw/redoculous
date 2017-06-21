@@ -12,17 +12,13 @@ exports.bar = await Promise.resolve("bar");
 Hello {{bar}} this is {{foo}}.
 
 ```setup
-const superagent = require('superagent-bluebird-promise');
-
-exports.result = await superagent
-  .get('https://www.metaweather.com/api/location/search')
-  .query({ query: 'seattle' })
-  .promise()
-  .get('body')
-  .get(0)
-  .get('title');
+exports.result = new Promise(res => setTimeout(
+  res,
+  500,
+  "value"
+));
 ```
 
-The search result is {{result}}
+The result is {{result}}
 
 also.. you can use previous exports: {{bar}}

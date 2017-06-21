@@ -1,4 +1,10 @@
 {
-  "plugins": ["transform-runtime", "transform-regenerator"],
-  "presets": ["es2015", "stage-1"],
+  "presets": [
+    ["env", {
+        "targets": {
+          "node": "current"
+        }
+    }],
+    "stage-1"
+  ],
 }
