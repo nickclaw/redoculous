@@ -1,31 +1,28 @@
-import vm from 'vm';
 import Promise from 'bluebird';
+import { runInContext, createContext } from 'vm';
 import { stripIndent } from 'common-tags';
 
 export default (
   text = '',
   _module = { exports: {} }
 ) => {
-  const code = stripIndent`
-    const $fn = async () => { ${text}; };
-    Promise.resolve($fn()).return(module);
-  `;
 
-  // shallow clone
+  // shallow clone module
   const module = { ..._module, exports: {
     ..._module.exports
   }};
 
-  const ctx = {
+  const code = stripIndent`
+    const $fn = async () => { ${text}; };
+    Promise.resolve($fn()).then(() => module);
+  `;
+
+  const ctx = createContext({
     ...global,
-    Promise: Promise,
     require: require,
     module: module,
     exports: module.exports,
-  };
+  });
 
-  return vm.runInContext(
-    code,
-    vm.createContext(ctx)
-  );
+  return Promise.resolve(runInContext(code, ctx));
 }

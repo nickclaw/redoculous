@@ -1,11 +1,17 @@
-import vm from 'vm';
 import Promise from 'bluebird';
+import { runInContext, createContext } from 'vm';
 import { stripIndent } from 'common-tags';
 
 export default (
   text = '',
   _module = { exports: {} }
 ) => {
+
+  // shallow clone module
+  const module = { ..._module, exports: {
+    ..._module.exports
+  }};
+
   const code = stripIndent`
     const $util = $require('util');
     const $fn = async () => {
@@ -27,20 +33,12 @@ export default (
     });
   `;
 
-  // shallow clone
-  const module = { ..._module, exports: {
-    ..._module.exports
-  }};
 
-  const ctx = {
+  const ctx = createContext({
     ...module,
     ...module.exports,
-    Promise: Promise,
     $require: require,
-  };
+  });
 
-  return vm.runInContext(
-    code,
-    vm.createContext(ctx)
-  );
+  return Promise.resolve(runInContext(code, ctx));
 }

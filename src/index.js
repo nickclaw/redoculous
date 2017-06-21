@@ -3,8 +3,6 @@ import Promise from 'bluebird';
 import runSetup from './run-setup';
 import runTemplate from './run-template';
 
-Promise.config({ cancellation: true });
-
 function isSetup(node) {
   return node.type === 'code'
     && node.lang === 'setup';
@@ -46,9 +44,9 @@ function createModifier(module) {
   }
 
   async function executeTemplate({ node }) {
-    const raws = node.value.match(/\{\{(.+?)\}\}/g).map(s => s.substring(2, s.length - 2));
+    const raws = node.value.match(/\{\{.+?\}\}/g).map(s => s.substring(2, s.length - 2));
     const values = await Promise.all(raws.map(raw => runTemplate(raw, module)));
-    const text = node.value.replace(/\{\{(.+?)\}\}/g, () => values.shift());
+    const text = node.value.replace(/\{\{.+?\}\}/g, () => values.shift());
     node.value = text;
   }
 
