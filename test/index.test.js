@@ -1,20 +1,11 @@
-import redoculous from '../src';
-import { stripIndent } from 'common-tags';
-import _ from 'lodash';
-import fs from 'fs';
-import stringify from 'remark-stringify';
-import remark from 'remark';
 import Promise from 'bluebird';
+import fs from 'fs';
+import _ from 'lodash';
+import remark from 'remark';
+import stringify from 'remark-stringify';
 
-function prettyPrint(text) {
-process.stdout.write(
-`
-########################################
-${text}
-########################################
-`
-);
-}
+import redoculous from '../src';
+import print from './utils/print';
 
 describe('redoculous', () => {
 
@@ -23,18 +14,25 @@ describe('redoculous', () => {
 
   describe('plugin', () => {
 
-    const process = (text) => Promise.fromNode(done =>
-      remark()
+    it('should be possible to define initial exports', () => {
+      return remark()
+        .use(redoculous, { exports: { foo: 1 } })
+        .use(stringify)
+        .process(`{{foo}}`)
+        .then(file => String(file))
+        .then(text => expect(text).to.equal('1\n'));
+    });
+
+    it('should run the example', () => {
+      const path = __dirname + '/fixtures/example.md';
+      const text = fs.readFileSync(path).toString('utf8');
+
+      return remark()
         .use(redoculous)
         .use(stringify)
-        .process(text, done)
-    );
-
-    it('should work', () => {
-      const text = fs.readFileSync(__dirname + '/fixtures/example.md').toString('utf8');
-
-      return process(text)
-        .tap(file => prettyPrint(String(file)));
+        .process(text)
+        .then(file => String(file))
+        .then(result => print(text, result));
     });
   });
 })

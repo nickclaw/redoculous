@@ -3,19 +3,30 @@ import Promise from 'bluebird';
 import runSetup from './run-setup';
 import runTemplate from './run-template';
 
+/**
+ * Checks if a node is a setup node
+ * @param {Node} node
+ * @return {Boolean}
+ */
 function isSetup(node) {
   return node.type === 'code'
     && node.lang === 'setup';
 }
 
+/**
+ * Checks if a node is a template node
+ * @param {Node} node
+ * @return {Boolean}
+ */
 function isTemplate(node) {
   return typeof node.value === 'string'
     && !!node.value.match(/\{\{.+?\}\}/);
 }
 
+
 function createVisitor(queue) {
 
-  return function visitor(node, index, parent) {
+  return (node, index, parent) => {
     switch (true) {
       case isSetup(node):
         return queue.push({
@@ -58,11 +69,19 @@ function createModifier(module) {
   }
 }
 
-export default function attacher() {
+/**
+ * Redoculous plugin
+ * @param {Object} options
+ * @param {Object} options.exports - initial exports object
+ * @return {Transformer}
+ */
+export default function attacher({
+  exports = {},
+} = {}) {
 
   return async function transformer(node) {
     const queue = [];
-    const module = { exports: {} };
+    const module = { exports };
     const visitor = createVisitor(queue);
     const modifier = createModifier(module);
 
