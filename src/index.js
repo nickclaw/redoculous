@@ -1,5 +1,6 @@
 import visit from 'unist-util-visit';
 import Promise from 'bluebird';
+import path from 'path';
 import runSetup from './run-setup';
 import runTemplate from './run-template';
 
@@ -47,10 +48,10 @@ function createVisitor(queue) {
   }
 }
 
-function createModifier(module) {
+function createModifier(module, dir) {
 
   async function executeSetup({ node, parent }) {
-    module = await runSetup(node.value, module);
+    module = await runSetup(node.value, module, dir);
     parent.children.splice(parent.children.indexOf(node), 1);
   }
 
@@ -73,17 +74,20 @@ function createModifier(module) {
  * Redoculous plugin
  * @param {Object} options
  * @param {Object} options.exports - initial exports object
+ * @param {String} options.filepath - optional filepath to resolve require from
  * @return {Transformer}
  */
 export default function attacher({
   exports = {},
+  filepath = __dirname + __filename,
 } = {}) {
+  const dir = path.dirname(filepath);
 
   return async function transformer(node) {
     const queue = [];
     const module = { exports };
     const visitor = createVisitor(queue);
-    const modifier = createModifier(module);
+    const modifier = createModifier(module, dir);
 
     visit(node, visitor);
 

@@ -1,7 +1,7 @@
 ```setup
 
 exports.foo = "World";
-exports.bar = await Promise.resolve("bar");
+exports.bar = require("./module");
 ```
 
 

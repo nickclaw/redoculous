@@ -35,7 +35,6 @@ export default (
 
 
   const ctx = createContext({
-    ...module,
     ...module.exports,
     $require: require,
   });

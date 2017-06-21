@@ -28,7 +28,7 @@ describe('redoculous', () => {
       const text = fs.readFileSync(path).toString('utf8');
 
       return remark()
-        .use(redoculous)
+        .use(redoculous, { filepath: path })
         .use(stringify)
         .process(text)
         .then(file => String(file))
