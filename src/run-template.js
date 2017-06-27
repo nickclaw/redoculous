@@ -14,11 +14,9 @@ export default (
 
   const code = stripIndent`
     const $util = $require('util');
-    const $fn = async () => {
-      return await ${text};
-    };
+    const $fn = async () => await ${text};
 
-    Promise.resolve($fn()).then(val => {
+    $fn().then(val => {
       // handle objects
       if (typeof val === 'object') {
         return $util.inspect(val);

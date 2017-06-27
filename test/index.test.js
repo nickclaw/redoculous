@@ -1,8 +1,5 @@
-import Promise from 'bluebird';
 import fs from 'fs';
 import _ from 'lodash';
-import remark from 'remark';
-import stringify from 'remark-stringify';
 
 import redoculous from '../src';
 import print from './utils/print';
@@ -11,28 +8,18 @@ describe('redoculous', () => {
 
   require('./run-setup.test.js');
   require('./run-template.test.js');
+  require('./parse.test.js');
 
-  describe('plugin', () => {
+  describe('process', () => {
+    it('should work', async () => {
+      const path = __dirname + '/fixtures/example.md.doc';
+      const raw = fs.readFileSync(path).toString('utf8');
+      const text = await redoculous({
+        filepath: path,
+        data: raw,
+      });
 
-    it('should be possible to define initial exports', () => {
-      return remark()
-        .use(redoculous, { exports: { foo: 1 } })
-        .use(stringify)
-        .process(`{{foo}}`)
-        .then(file => String(file))
-        .then(text => expect(text).to.equal('1\n'));
-    });
-
-    it('should run the example', () => {
-      const path = __dirname + '/fixtures/example.md';
-      const text = fs.readFileSync(path).toString('utf8');
-
-      return remark()
-        .use(redoculous, { filepath: path })
-        .use(stringify)
-        .process(text)
-        .then(file => String(file))
-        .then(result => print(text, result));
+      print(raw, text);
     });
   });
-})
+});

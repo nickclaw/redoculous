@@ -15,8 +15,8 @@ export default (
   }};
 
   const code = stripIndent`
-    const $fn = async () => { ${text}; };
-    Promise.resolve($fn()).then(() => module);
+    const $fn = async () => { ${text};  };
+    $fn().then(() => module);
   `;
 
   // TODO try to supply everything node does, but with the the filename/dirname of the md file
