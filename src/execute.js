@@ -3,39 +3,47 @@ import { stripIndent } from 'common-tags';
 import importFrom from 'import-from';
 import Promise from 'bluebird';
 
+function safe(val) {
+  return JSON.stringify(val);
+}
+
 function createScriptBlock(node) {
   return `;${node.value};`
 }
 
 function createExpressionBlock(node) {
-  return `;$print($eval(${JSON.stringify(node.value)}))`;
+  return stripIndent`
+    if (true) {
+      const { createContext, runInContext } = require('vm');
+      const ctx = createContext(module.exports);
+      $print(await runInContext(${safe(node.value)}, ctx));
+    }
+  `;
 }
 
 function createTextBlock(node) {
-  return `;$print(${JSON.stringify(node.value)});`
+  return `;$print(${safe(node.value)});`
 }
 
 export default function execute(ast, module, dir) {
+  const blocks = ast.map(node => {
+    switch(node.type) {
+      case 'script': return createScriptBlock(node);
+      case 'expression': return createExpressionBlock(node);
+      default: return createTextBlock(node);
+    }
+  });
+
   const code = stripIndent`
     const $text = [];
-    const $print = async data => $text.push(await data);
-    const $eval = code => {
-        const vm = require('vm');
-        const ctx = vm.createContext(module.exports);
-        return vm.runInContext(code, ctx);
-    };
+    const $print = data => $text.push(data);
 
     const $fn = async () => {
-      ${ast.map(node => {
-        switch(node.type) {
-          case 'script': return createScriptBlock(node);
-          case 'expression': return createExpressionBlock(node);
-          default: return createTextBlock(node);
-        }
-      }).join('\n')}
+      ${blocks.join('\n')};
+      return $text.join('')
     }
 
-    $fn().then(() => $text.join(''));
+    $fn();
   `;
 
   const ctx = createContext({
