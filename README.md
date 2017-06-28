@@ -31,15 +31,15 @@ Process a template into text. Takes the following options:
 ```php
 <?doc
 // you have a full node environment to setup exports
-exports.foo = "World";
-exports.bar = require("./module");
+const foo = "World";
+const bar = require("./module");
 ?>
 
 # Interpolate exported values easily with: <?= foo ?>
 
 <?doc
 // each doc block is ran inside an async function
-exports.result = await new Promise(res => setTimeout(
+const result = await new Promise(res => setTimeout(
   res,
   500,
   "value"
@@ -52,7 +52,7 @@ Previous exports still work: <?= bar ?>
 
 <?doc
 // this is kind of hacky but it works
-for (exports.i = 0; exports.i < 10; exports.i++) { ?>
+for (let i = 0; i < 10; i++) { ?>
 repeating <?= i ?> times
 <?doc } ?>
 

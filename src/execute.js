@@ -12,13 +12,7 @@ function createScriptBlock(node) {
 }
 
 function createExpressionBlock(node) {
-  return stripIndent`
-    if (true) {
-      const { createContext, runInContext } = require('vm');
-      const ctx = createContext(module.exports);
-      $print(await runInContext(${safe(node.value)}, ctx));
-    }
-  `;
+  return `;$print(await ${safe(node.value)});`;
 }
 
 function createTextBlock(node) {
