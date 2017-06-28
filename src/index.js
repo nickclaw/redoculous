@@ -1,7 +1,6 @@
 import path from 'path';
-import runSetup from './run-setup';
-import runTemplate from './run-template';
 import parse from './parse';
+import execute from './execute';
 
 /**
  * Process
@@ -18,22 +17,7 @@ export default async function process({
 } = {}) {
   const dir = path.dirname(filepath);
   const ast = parse(data);
-  const results = [];
-  let module = { exports };
+  const module = { exports };
 
-  for (const node of ast) {
-    switch(node.type) {
-      case 'script':
-        module = await runSetup(node.value, module, dir);
-        break;
-      case 'expression':
-        results.push(await runTemplate(node.value, module));
-        break;
-      default:
-        results.push(node.value);
-        break;
-    }
-  }
-
-  return results.join('');
+  return execute(ast, module, dir);
 }

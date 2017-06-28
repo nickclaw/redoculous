@@ -5,9 +5,6 @@ import redoculous from '../src';
 import print from './utils/print';
 
 describe('redoculous', () => {
-
-  require('./run-setup.test.js');
-  require('./run-template.test.js');
   require('./parse.test.js');
 
   describe('process', () => {

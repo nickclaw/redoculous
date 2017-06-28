@@ -50,4 +50,10 @@ The result is <?= result ?>
 
 Previous exports still work: <?= bar ?>
 
+<?doc
+// this is kind of hacky but it works
+for (exports.i = 0; exports.i < 10; exports.i++) { ?>
+repeating <?= i ?> times
+<?doc } ?>
+
 ```

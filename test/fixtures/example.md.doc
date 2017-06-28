@@ -21,3 +21,7 @@ exports.result = new Promise(res => setTimeout(
 The result is <?= result ?>
 
 also.. you can use previous exports: <?= bar ?>
+
+<?doc for (exports.i = 0; exports.i < 10; exports.i++) { ?>
+repeating <?= i ?> times
+<?doc } ?>
