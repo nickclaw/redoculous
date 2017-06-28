@@ -2,6 +2,7 @@
 const Promise = require('bluebird');
 const foo = "World";
 const bar = require("./module");
+const test = process.env.DEBUG;
 ?>
 
 # Hello <?= foo ?>

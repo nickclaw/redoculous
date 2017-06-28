@@ -2,6 +2,7 @@ import { runInContext, createContext } from 'vm';
 import { stripIndent } from 'common-tags';
 import importFrom from 'import-from';
 import Promise from 'bluebird';
+import path from 'path';
 
 function safe(val) {
   return JSON.stringify(val);
@@ -19,7 +20,11 @@ function createTextBlock(node) {
   return `;$print(${safe(node.value)});`
 }
 
-export default function execute(ast, module, dir) {
+export default function execute(ast, module, filepath) {
+  const __dirname = path.dirname(filepath);
+  const __filename = path.basename(filepath);
+  const require = id => importFrom(__dirname, id);
+
   const blocks = ast.map(node => {
     switch(node.type) {
       case 'script': return createScriptBlock(node);
@@ -42,8 +47,10 @@ export default function execute(ast, module, dir) {
 
   const ctx = createContext({
     ...global,
-    require: id => importFrom(dir, id),
-    module: module,
+    __dirname,
+    __filename,
+    module,
+    require,
     exports: module.exports,
   });
 

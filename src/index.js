@@ -1,4 +1,3 @@
-import path from 'path';
 import parse from './parse';
 import execute from './execute';
 
@@ -15,9 +14,8 @@ export default async function process({
   filepath = __dirname + __filename,
   data,
 } = {}) {
-  const dir = path.dirname(filepath);
   const ast = parse(data);
   const module = { exports };
 
-  return execute(ast, module, dir);
+  return execute(ast, module, filepath);
 }
