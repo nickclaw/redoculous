@@ -1,5 +1,5 @@
 <?doc
-
+const Promise = require('bluebird');
 const foo = "World";
 const bar = require("./module");
 ?>
@@ -11,11 +11,7 @@ const bar = require("./module");
 Hello <?= bar ?> this is <?= foo ?>.
 
 <?doc
-const result = await new Promise(res => setTimeout(
-  res,
-  500,
-  "value"
-));
+const result = await Promise.delay(10).return('test');
 ?>
 
 The result is <?= result ?>

@@ -12,7 +12,7 @@ function createScriptBlock(node) {
 }
 
 function createExpressionBlock(node) {
-  return `;$print(await ${safe(node.value)});`;
+  return `;$print(await ${node.value});`;
 }
 
 function createTextBlock(node) {
