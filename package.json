@@ -1,7 +1,7 @@
 {
   "name": "redoculous",
   "version": "0.1.0",
-  "description": "",
+  "description": "PHP style templates",
   "main": "lib/index.js",
   "scripts": {
     "build": "rm -rf lib && babel src --out-dir lib",
@@ -18,7 +18,14 @@
   "bugs": {
     "url": "http://github.com/nickclaw/redoculous/issues"
   },
-  "keywords": [],
+  "keywords": [
+    "template",
+    "async",
+    "await",
+    "php",
+    "documentation",
+    "generated"
+  ],
   "author": "Nicholas Clawson <nickclaw@gmail.com> (nickclaw.com)",
   "license": "MIT",
   "dependencies": {
@@ -39,5 +46,8 @@
     "eslint": "^4.0.0",
     "mocha": "^3.2.0",
     "sinon": "^2.3.5"
+  },
+  "engines": {
+    "node": ">=8"
   }
 }

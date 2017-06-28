@@ -9,7 +9,7 @@ import execute from './execute';
  * @param {String} options.data - the text content
  * @return {Promise<String>}
  */
-export default async function process({
+export default function process({
   exports = {},
   filepath = __dirname + __filename,
   data,
