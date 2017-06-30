@@ -49,5 +49,6 @@
   },
   "engines": {
     "node": ">=8"
-  }
+  },
+  "tonicExampleFilename": "example/index.js"
 }

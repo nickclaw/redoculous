@@ -1,20 +1,20 @@
 # redoculous [![Build Status](https://travis-ci.org/nickclaw/redoculous.svg?branch=master)](https://travis-ci.org/nickclaw/redoculous)
 
-An async template library in the style of PHP.
+An async template library in the style of PHP. [Try it out!](https://npm.runkit.com/redoculous)
  - Use the entire power of the node runtime.
  - Handle asynchronous code easily with `await`
- - Identify errors fast with [accurate stacktraces](/test/blame.test.js).
+ - Identify errors fast with [accurate stack traces](/test/blame.test.js).
 
 ### Example
 
 ```js
-import process from 'redoculous';
+import render from 'redoculous';
 import fs from 'fs';
 
 const path = '/path/to/template.md.doc';
 const raw = fs.readFileSync(path);
 
-process({
+render({
   filepath: path,
   data: raw,
 }).then(
@@ -25,7 +25,7 @@ process({
 
 ### API
 
-##### `process(options: Object) -> Promise<String>`
+##### `render(options: Object) -> Promise<String>`
 Process a template into text. Takes the following options:
  - `data: String` the template to render
  - `filepath: ?String` where to resolve `require` from

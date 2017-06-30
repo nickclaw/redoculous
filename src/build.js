@@ -44,10 +44,7 @@ export default function execute(ast) {
       return $text.join('')
     }
 
-    $fn().catch(err => {
-      err.lines = $fn.toString().split('\\n');
-      throw err;
-    });
+    $fn();
   `;
 
   return code;
