@@ -1,5 +1,10 @@
 # redoculous [![Build Status](https://travis-ci.org/nickclaw/redoculous.svg?branch=master)](https://travis-ci.org/nickclaw/redoculous)
 
+An async template library in the style of PHP.
+ - Use the entire power of the node runtime.
+ - Handle asynchronous code easily with `await`
+ - Identify errors fast with [accurate stacktraces](/test/blame.test.js).
+
 ### Example
 
 ```js
