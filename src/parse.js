@@ -2,13 +2,27 @@ import assert from 'assert';
 
 export default function parse(str) {
   const ast = [];
+  let row = 0;
+  let col = 0;
   let at = 0;
   let ch = str[at];
 
+  const captureLoc = () => {
+    return { col, row };
+  }
+
   const skip = (n) => {
-    at += n;
-    ch = str[at];
-    return ch;
+    for (let i = 0; i < n; i++) {
+      if (ch === '\n') {
+        col = 0;
+        row += 1;
+      } else {
+        col += 1;
+      }
+
+      at += 1;
+      ch = str[at];
+    }
   };
 
   const peek = (pat) => {
@@ -26,7 +40,9 @@ export default function parse(str) {
   };
 
   function text() {
+    const start = captureLoc();
     let data = "";
+
     while (ch && !peek('<?doc') && !peek('<?=')) {
       data += ch;
       skip(1);
@@ -35,10 +51,14 @@ export default function parse(str) {
     return {
       type: 'text',
       value: data,
+      start: start,
+      end: captureLoc(),
     };
   }
 
   function expression() {
+    const start = captureLoc();
+
     assert(match('<?='), 'Expected expression tag');
 
     let data = "";
@@ -52,10 +72,14 @@ export default function parse(str) {
     return {
       type: 'expression',
       value: data,
+      start: start,
+      end: captureLoc(),
     }
   }
 
   function script() {
+    const start = captureLoc();
+
     assert(match('<?doc'), 'Expected doc tag');
 
     let data = "";
@@ -69,6 +93,8 @@ export default function parse(str) {
     return {
       type: 'script',
       value: data,
+      start: start,
+      end: captureLoc(),
     };
   }
 
