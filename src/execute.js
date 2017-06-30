@@ -20,7 +20,7 @@ function createTextBlock(node) {
   return `;$print(${safe(node.value)});`
 }
 
-export default function execute(ast, module, filepath) {
+export default function execute(ast, filepath, module) {
   const __dirname = path.dirname(filepath);
   const __filename = path.basename(filepath);
   const require = id => importFrom(__dirname, id);
@@ -54,5 +54,9 @@ export default function execute(ast, module, filepath) {
     exports: module.exports,
   });
 
-  return Promise.resolve(runInContext(code, ctx));
+  const options = {
+    filename: filepath,
+  };
+
+  return Promise.resolve(runInContext(code, ctx, options));
 }

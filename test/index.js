@@ -6,6 +6,7 @@ import print from './utils/print';
 
 describe('redoculous', () => {
   require('./parse.test.js');
+  require('./blame.test.js');
 
   describe('process', () => {
     it('should work', async () => {

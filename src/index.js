@@ -1,5 +1,6 @@
 import parse from './parse';
 import execute from './execute';
+import blame from './blame';
 
 /**
  * Process
@@ -17,5 +18,6 @@ export default function process({
   const ast = parse(data);
   const module = { exports };
 
-  return execute(ast, module, filepath);
+  return execute(ast, filepath, module)
+    .catch(err => blame(ast, filepath, err));
 }
