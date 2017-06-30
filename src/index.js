@@ -1,4 +1,5 @@
 import parse from './parse';
+import build from './build';
 import execute from './execute';
 import blame from './blame';
 
@@ -15,9 +16,10 @@ export default function process({
   filepath = __dirname + __filename,
   data,
 } = {}) {
-  const ast = parse(data);
   const module = { exports };
+  const ast = parse(data);
+  const code = build(ast);
 
-  return execute(ast, filepath, module)
-    .catch(err => blame(ast, filepath, err));
+  return execute(code, filepath, module)
+    .catch(err => blame(code, filepath, err));
 }

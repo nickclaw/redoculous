@@ -1,4 +1,5 @@
 import parse from '../src/parse';
+import build from '../src/build';
 import execute from '../src/execute';
 import blame from '../src/blame';
 import { stripIndent } from 'common-tags';
@@ -16,13 +17,15 @@ async function getError(fn) {
   throw new Error('function did not throw');
 }
 
-describe.only('blame', () => {
+describe('blame', () => {
 
   it('should work', async () => {
     const text = `<?= (function test(){ (function(){foo})() })() ?>`;
     const ast = parse(text);
-    const err = await getError(() => execute(ast, filename, module));
+    const code = build(ast);
+    const err = await getError(() => execute(code, filename, module));
+    const newErr = await getError(() => blame(code, filename, err));
 
-    blame(ast, filename, err);
+    expect(newErr.stack).to.contain('/path/to/foo.md:1');
   });
 });
