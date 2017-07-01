@@ -15,15 +15,16 @@ export default function execute(code, filepath, globals) {
   const require = id => importFrom(__dirname, id);
   const exports = {};
   const module = { exports };
+  // TODO maybe include all from https://nodejs.org/api/modules.html
 
   const ctx = createContext({
-    __dirname,
-    __filename,
-    module,
-    require,
-    exports,
     ...global,
     ...globals,
+    __dirname,
+    __filename,
+    require,
+    module,
+    exports,
   });
 
   const options = {
