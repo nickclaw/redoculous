@@ -8,13 +8,13 @@ import blame from './blame';
  * @param {Object} options
  * @param {String} options.template - the text content
  * @param {String} options.filepath - optional filepath to resolve require from
- * @param {Object} options.globals - initial globals object
+ * @param {Object=} options.globals - initial globals object
  * @return {Promise<String>}
  */
 export default function render({
-  template = '',
+  template,
+  filepath,
   globals = {},
-  filepath = __dirname + __filename,
 } = {}) {
   const ast = parse(template);
   const code = build(ast);

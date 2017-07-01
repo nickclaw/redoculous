@@ -15,8 +15,9 @@ const path = '/path/to/template.md.doc';
 const raw = fs.readFileSync(path);
 
 render({
+  template: raw,
   filepath: path,
-  data: raw,
+  globals = { foo: 'bar' }
 }).then(
   text => console.log(text),
   err => console.error(err),
@@ -27,8 +28,8 @@ render({
 
 ##### `render(options: Object) -> Promise<String>`
 Process a template into text. Takes the following options:
- - `data: String` the template to render
- - `filepath: ?String` where to resolve `require` from
+ - `template: String` the template to render
+ - `filepath: String` where to resolve `require` from
  - `globals: ?Object` the initial variables your template can use
 
 ### Syntax
