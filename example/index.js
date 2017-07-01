@@ -20,7 +20,7 @@ const template = stripIndent`
 `;
 
 render({
-  data: template,
+  template: template,
   filepath: '/path/to/foo.md',
 }).then(
   val => console.log(val),
