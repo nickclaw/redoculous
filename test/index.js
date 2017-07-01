@@ -5,6 +5,7 @@ import render from '../src';
 
 describe('redoculous', () => {
   require('./parse.test.js');
+  require('./build.test.js');
   require('./execute.test.js');
   require('./blame.test.js');
 
