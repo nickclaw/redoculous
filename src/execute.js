@@ -1,6 +1,5 @@
 import { runInContext, createContext } from 'vm';
 import importFrom from 'import-from';
-import Promise from 'bluebird';
 import path from 'path';
 
 /**
