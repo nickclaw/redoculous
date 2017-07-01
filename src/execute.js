@@ -10,21 +10,18 @@ import path from 'path';
  * @return {Promise<String>}
  */
 export default function execute(code, filepath, globals) {
-  const __dirname = path.dirname(filepath);
-  const __filename = path.basename(filepath);
-  const require = id => importFrom(__dirname, id);
-  const exports = {};
-  const module = { exports };
   // TODO maybe include all from https://nodejs.org/api/modules.html
+  const module = { exports: {} };
+  const dir = path.dirname(filepath);
 
   const ctx = createContext({
     ...global,
     ...globals,
-    __dirname,
-    __filename,
-    require,
-    module,
-    exports,
+    module: module,
+    exports: module.exports,
+    __dirname: dir,
+    __filename: path.basename(filepath),
+    require: id => importFrom(dir, id),
   });
 
   const options = {
@@ -32,5 +29,11 @@ export default function execute(code, filepath, globals) {
     lineOffset: -1,
   };
 
-  return Promise.resolve(runInContext(code, ctx, options));
+  return new Promise((res, rej) => {
+    try {
+      res(runInContext(code, ctx, options));
+    } catch (e) {
+      rej(e);
+    }
+  });
 }

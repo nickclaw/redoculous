@@ -5,7 +5,13 @@ import path from 'path';
 describe('execute', () => {
 
   it('should return a promise', () => {
-    expect(execute('1', '/foo.js', {})).to.be.instanceOf(Promise);
+    return execute('1', '/foo.js', {})
+      .then(val => expect(val).to.equal(1));
+  });
+
+  it('should not synchronously throw when invoking', () => {
+    return execute('foo', '/foo.js', {})
+      .catch(e => expect(e.message).to.match(/foo/));
   });
 
   it('should set the proper __dirname & __filename', () => {
