@@ -14,7 +14,7 @@ describe('redoculous', () => {
       const raw = fs.readFileSync(path).toString('utf8');
       const text = await redoculous({
         filepath: path,
-        data: raw,
+        template: raw,
       });
 
       print(raw, text);

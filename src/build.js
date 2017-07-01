@@ -13,13 +13,13 @@ function createBlock(node) {
 }
 
 function createExpression(node) {
-  const line = `;$print(await ${node.value});`;
+  const line = `;$doc.push(await ${node.value});`;
   return annotate(node, line);
 }
 
 function createText(node) {
   const text = JSON.stringify(node.value);
-  const line = `;$print(${text});`;
+  const line = `;$doc.push(${text});`;
   return line;
 }
 
@@ -42,15 +42,12 @@ export default function build(ast) {
     .join('\n');
 
   const code = stripIndent`
-    const $text = [];
-    const $print = data => $text.push(data);
+    const $doc = [];
 
-    const $fn = async () => {
+    (async () => {
       ${content};
-      return $text.join('')
-    }
-
-    $fn();
+      return $doc.join('')
+    })();
   `;
 
   return code;

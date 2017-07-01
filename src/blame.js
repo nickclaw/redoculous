@@ -1,3 +1,4 @@
+import _ from 'lodash';
 
 /**
  * Rewrite stack traces to make them match the template
@@ -10,14 +11,16 @@ export default function blame(code, filepath, err) {
   const codeLines = code.split('\n');
   const stack = err.stack.split('\n');
 
-  // extract important pieces from the stak
+  // extract important pieces from the stack
   const startIndex = stack.findIndex(line => line.match(/^\s+at/));
-  const stopIndex = stack.findIndex(line => line.match(/^\s+at \$fn/)) + 1;
+  const middleIndex = _.findLastIndex(stack, line => line.match(new RegExp(filepath)));
+  const endIndex = stack.findIndex((line, i) => i > middleIndex && line.match(/at runInContext/)) + 1;
   const message = stack.slice(0, startIndex);
-  const rawLines = stack.slice(startIndex, stopIndex);
+  const templateLines = stack.slice(startIndex, middleIndex);
+  const finalLines = stack.slice(endIndex);
 
   // transform lines
-  const lines = rawLines.map(line => {
+  const lines = templateLines.map(line => {
     // is this line remappable?
     const regex = new RegExp(`${filepath}:(\\d+):(\\d+)`);
     const match = line.match(regex);
@@ -31,7 +34,12 @@ export default function blame(code, filepath, err) {
   });
 
   // update the original error's stack
-  err.stack = [...message, ...lines].join('\n');
+  err.stack = [
+    ...message,
+    ...lines,
+    "From call:",
+    ...finalLines,
+  ].join('\n');
 
   throw err;
 }
