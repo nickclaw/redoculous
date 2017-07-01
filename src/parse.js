@@ -112,11 +112,9 @@ export default function parse(str) {
 
   // an expression, block, or text
   function value() {
-    switch(true) {
-      case peek('<?doc'): return block();
-      case peek('<?='): return expression();
-      case true: return text();
-    }
+    if (peek('<?=')) return expression();
+    if (peek('<?doc')) return block();
+    return text();
   }
 
   // a redoc template
