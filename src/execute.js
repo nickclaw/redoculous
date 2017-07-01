@@ -3,18 +3,28 @@ import importFrom from 'import-from';
 import Promise from 'bluebird';
 import path from 'path';
 
-export default function execute(code, filepath, module) {
+/**
+ * Execute code built by the build function
+ * @param {String} code
+ * @param {String} filepath
+ * @param {Object} globals
+ * @return {Promise<String>}
+ */
+export default function execute(code, filepath, globals) {
   const __dirname = path.dirname(filepath);
   const __filename = path.basename(filepath);
   const require = id => importFrom(__dirname, id);
+  const exports = {};
+  const module = { exports };
 
   const ctx = createContext({
-    ...global,
     __dirname,
     __filename,
     module,
     require,
-    exports: module.exports,
+    exports,
+    ...global,
+    ...globals,
   });
 
   const options = {

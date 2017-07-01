@@ -9,7 +9,8 @@ describe('parse', () => {
       bar
     `;
 
-    const [node] = parse(str);
+    const ast = parse(str);
+    const [ node ] = ast.children;
     expect(node.value).to.equal('foo\nbar');
     expect(node.start).to.deep.equal({ row: 0, col: 0 });
     expect(node.end).to.deep.equal({ row: 1, col: 3 });
@@ -20,7 +21,8 @@ describe('parse', () => {
       <?= foo ?>
     `;
 
-    const [node] = parse(str);
+    const ast = parse(str);
+    const [ node ] = ast.children;
     expect(node.value).to.equal(' foo ');
     expect(node.start).to.deep.equal({ row: 0, col: 0 });
     expect(node.end).to.deep.equal({ row: 0, col: 10 });
@@ -33,7 +35,8 @@ describe('parse', () => {
       ?>
     `
 
-    const [node] = parse(str);
+    const ast = parse(str);
+    const [ node ] = ast.children;
     expect(node.value).to.equal(`\n  const foo = 'bar';\n`);
     expect(node.start).to.deep.equal({ row: 0, col: 0 });
     expect(node.end).to.deep.equal({ row: 2, col: 2 });
@@ -50,5 +53,9 @@ describe('parse', () => {
     `;
 
     const ast = parse(str);
+    expect(ast.type).to.equal('redoc');
+    expect(ast.children.length).to.equal(5);
+    expect(ast.start).to.deep.equal({ row: 0, col: 0 });
+    expect(ast.end).to.deep.equal({ row: 5, col: 52 });
   });
 });

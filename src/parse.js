@@ -1,17 +1,23 @@
 import assert from 'assert';
 
+/**
+ * Parse text into a redoculous AST
+ * @param {String} template
+ * @return {Object} ast
+ */
 export default function parse(str) {
-  const ast = [];
   let row = 0;
   let col = 0;
   let at = 0;
   let ch = str[at];
 
-  const captureLoc = () => {
+  // return the current position
+  function captureLoc() {
     return { col, row };
   }
 
-  const skip = (n) => {
+  // move forward n characters - tracking position as well
+  function skip(n) {
     for (let i = 0; i < n; i++) {
       if (ch === '\n') {
         col = 0;
@@ -23,39 +29,26 @@ export default function parse(str) {
       at += 1;
       ch = str[at];
     }
-  };
+  }
 
-  const peek = (pat) => {
+  // look ahead n characters
+  function peek(pat) {
     for (let i = 0; i < pat.length; i++) {
       if (pat[i] !== str[at + i]) return false;
     }
 
     return true;
-  };
+  }
 
-  const match = (pat) => {
+  // attempt to match a pattern
+  // return true & advance if there's a match
+  function match(pat) {
     if (!peek(pat)) return false;
     skip(pat.length);
     return true;
-  };
-
-  function text() {
-    const start = captureLoc();
-    let data = "";
-
-    while (ch && !peek('<?doc') && !peek('<?=')) {
-      data += ch;
-      skip(1);
-    }
-
-    return {
-      type: 'text',
-      value: data,
-      start: start,
-      end: captureLoc(),
-    };
   }
 
+  // a block like <?=.*?>
   function expression() {
     const start = captureLoc();
 
@@ -77,7 +70,8 @@ export default function parse(str) {
     }
   }
 
-  function script() {
+  // a block like <?doc.*?>
+  function block() {
     const start = captureLoc();
 
     assert(match('<?doc'), 'Expected doc tag');
@@ -91,24 +85,58 @@ export default function parse(str) {
     skip(2);
 
     return {
-      type: 'script',
+      type: 'block',
       value: data,
       start: start,
       end: captureLoc(),
     };
   }
 
+  // literally anything else
+  function text() {
+    const start = captureLoc();
+    let data = "";
+
+    while (ch && !peek('<?doc') && !peek('<?=')) {
+      data += ch;
+      skip(1);
+    }
+
+    return {
+      type: 'text',
+      value: data,
+      start: start,
+      end: captureLoc(),
+    };
+  }
+
+  // an expression, block, or text
   function value() {
     switch(true) {
-      case peek('<?doc'): return script();
+      case peek('<?doc'): return block();
       case peek('<?='): return expression();
       case true: return text();
     }
   }
 
-  while(ch) {
-    ast.push(value());
+  // a redoc template
+  function redoc() {
+    const start = captureLoc();
+    const children = [];
+
+    while(ch) {
+      children.push(value());
+    }
+
+    const end = captureLoc();
+
+    return {
+      type: 'redoc',
+      children,
+      start,
+      end,
+    };
   }
 
-  return ast;
+  return redoc();
 }

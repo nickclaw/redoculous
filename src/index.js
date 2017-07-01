@@ -4,22 +4,21 @@ import execute from './execute';
 import blame from './blame';
 
 /**
- * Process
+ * Render
  * @param {Object} options
- * @param {Object} options.exports - initial exports object
+ * @param {String} options.template - the text content
  * @param {String} options.filepath - optional filepath to resolve require from
- * @param {String} options.data - the text content
+ * @param {Object} options.globals - initial globals object
  * @return {Promise<String>}
  */
-export default function process({
-  exports = {},
+export default function render({
+  template = '',
+  globals = {},
   filepath = __dirname + __filename,
-  data,
 } = {}) {
-  const module = { exports };
-  const ast = parse(data);
+  const ast = parse(template);
   const code = build(ast);
 
-  return execute(code, filepath, module)
+  return execute(code, filepath, globals)
     .catch(err => blame(code, filepath, err));
 }

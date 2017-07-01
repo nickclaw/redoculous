@@ -29,7 +29,7 @@ render({
 Process a template into text. Takes the following options:
  - `data: String` the template to render
  - `filepath: ?String` where to resolve `require` from
- - `exports: ?Object` the `exports` object your template can use
+ - `globals: ?Object` the initial variables your template can use
 
 ### Syntax
 
