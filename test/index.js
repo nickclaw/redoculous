@@ -1,23 +1,35 @@
 import fs from 'fs';
-import _ from 'lodash';
+import path from 'path';
 
-import redoculous from '../src';
-import print from './utils/print';
+import render from '../src';
 
 describe('redoculous', () => {
   require('./parse.test.js');
   require('./blame.test.js');
 
-  describe('process', () => {
-    it('should work', async () => {
-      const path = __dirname + '/fixtures/example.md.doc';
-      const raw = fs.readFileSync(path).toString('utf8');
-      const text = await redoculous({
-        filepath: path,
-        template: raw,
-      });
+  describe('integration tests', () => {
+    const folder = path.join(__dirname, 'integration');
 
-      print(raw, text);
-    });
+    fs.readdirSync(folder).forEach(dir => {
+      it(`it should render ${dir} correctly`, async () => {
+        const inputPath = path.join(folder, dir, 'input');
+        const outputPath = path.join(folder, dir, 'output');
+        const input = fs.readFileSync(inputPath).toString('utf8');
+        const expected = fs.readFileSync(outputPath).toString('utf8');
+
+        let output = null;
+
+        try {
+          output = await render({
+            filepath: inputPath,
+            template: input,
+          });
+        } catch (err) {
+          output = err.stack;
+        } finally {
+          expect(output).to.equal(expected);
+        }
+      });
+    })
   });
 });

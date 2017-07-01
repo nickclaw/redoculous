@@ -1,0 +1,26 @@
+<?doc
+// you have a full node environment to play around in
+const foo = "World";
+const bar = require("./module");
+?>
+
+# Interpolate exported values easily with: <?= foo ?>
+
+
+<?doc
+// all code is run inside an async function
+const result = await new Promise(res => setTimeout(
+  res,
+  500,
+  "value"
+));
+?>
+
+The result is <?= result ?>
+
+
+<?doc
+// you can also interpolate code and text
+for (let i = 0; i < 10; i++) { ?>
+repeating <?= i ?> times
+<?doc } ?>
