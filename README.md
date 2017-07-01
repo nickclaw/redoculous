@@ -17,7 +17,7 @@ const raw = fs.readFileSync(path);
 render({
   template: raw,
   filepath: path,
-  globals = { foo: 'bar' }
+  globals: { foo: 'bar' }
 }).then(
   text => console.log(text),
   err => console.error(err),
