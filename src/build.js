@@ -1,4 +1,3 @@
-import { stripIndent } from 'common-tags';
 
 function annotate(node, str) {
   return str
@@ -41,13 +40,11 @@ export default function build(ast) {
     .map(createLine)
     .join('\n');
 
-  const code = stripIndent`
-    const $doc = [];
-
-    (async () => {
+  const code = `
+    (async ($doc) => {
       ${content};
       return $doc.join('')
-    })();
+    })([]);
   `;
 
   return code;

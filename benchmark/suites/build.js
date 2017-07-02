@@ -3,19 +3,24 @@ import fs from 'fs';
 import path from 'path';
 import oldParse from '../../lib/parse';
 import newParse from '../../src/parse';
+import oldBuild from '../../lib/parse';
+import newBuild from '../../src/parse';
 
 const filepath = path.join(__dirname, '..', 'fixtures', 'template');
 const template = fs.readFileSync(filepath).toString('utf8');
 
-export default () => new Promise(res => {
+const oldAst = oldParse(template);
+const newAst = newParse(template);
+
+export default () => new Promise((res) => {
   const suite = new Suite();
 
   suite.add('old version', {
-    fn: () => oldParse(template),
+    fn: () => oldBuild(oldAst),
   });
 
   suite.add('new version', {
-    fn: () => newParse(template),
+    fn: () => newBuild(newAst),
   });
 
   suite.on('cycle', (evt) => {
@@ -23,7 +28,7 @@ export default () => new Promise(res => {
   });
 
   suite.on('complete', () => {
-    console.log('Fastest parser is ' + suite.filter('fastest').map('name'));
+    console.log('Fastest builder is ' + suite.filter('fastest').map('name'));
     res();
   });
 

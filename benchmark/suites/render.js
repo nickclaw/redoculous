@@ -1,21 +1,28 @@
 import { Suite } from 'benchmark';
 import fs from 'fs';
 import path from 'path';
-import oldParse from '../../lib/parse';
-import newParse from '../../src/parse';
+import oldRender from '../../lib';
+import newRender from '../../src';
 
 const filepath = path.join(__dirname, '..', 'fixtures', 'template');
 const template = fs.readFileSync(filepath).toString('utf8');
+const options = { filepath, template };
 
 export default () => new Promise(res => {
   const suite = new Suite();
 
   suite.add('old version', {
-    fn: () => oldParse(template),
+    defer: true,
+    fn: def => oldRender(options)
+      .then(() => def.resolve())
+      .catch(e => def.resolve()),
   });
 
   suite.add('new version', {
-    fn: () => newParse(template),
+    defer: true,
+    fn: def => newRender(options)
+      .then(() => def.resolve())
+      .catch(e => def.resolve()),
   });
 
   suite.on('cycle', (evt) => {
@@ -23,7 +30,7 @@ export default () => new Promise(res => {
   });
 
   suite.on('complete', () => {
-    console.log('Fastest parser is ' + suite.filter('fastest').map('name'));
+    console.log('Fastest renderer is ' + suite.filter('fastest').map('name'));
     res();
   });
 
