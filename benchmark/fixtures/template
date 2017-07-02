@@ -1,0 +1,13 @@
+<?doc
+// you have a full node environment to play around in
+const foo = "World";
+?>
+
+# Interpolate exported values easily with: <?= foo ?>
+
+
+<?doc
+// you can also interpolate code and text
+for (let i = 0; i < 10; i++) { ?>
+repeating <?= i ?> times
+<?doc } ?>
