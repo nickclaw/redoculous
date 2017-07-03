@@ -8,6 +8,7 @@
     "lint": "eslint src",
     "pretest": "npm run lint",
     "test": "mocha test/index.js",
+    "bench": "node benchmark",
     "prepublishOnly": "npm run test && npm run build",
     "publish:major": "npm version major && npm publish",
     "publish:minor": "npm version minor && npm publish",
