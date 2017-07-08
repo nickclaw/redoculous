@@ -16,8 +16,10 @@ describe('execute', () => {
 
   it('should set the proper __dirname & __filename', () => {
     const code = stripIndent`
-      expect(__filename).to.equal('foo.js');
-      expect(__dirname).to.equal('/path/to');
+      (() => {
+        expect(__filename).to.equal('foo.js');
+        expect(__dirname).to.equal('/path/to');
+      })()
     `;
 
     return execute(code, '/path/to/foo.js', {});
@@ -25,9 +27,11 @@ describe('execute', () => {
 
   it('should provide an empty module.exports', () => {
     const code = stripIndent`
-      expect(exports).to.exist;
-      expect(module).to.exist;
-      expect(exports).to.equal(module.exports);
+      (() => {
+        expect(exports).to.exist;
+        expect(module).to.exist;
+        expect(exports).to.equal(module.exports);
+      })();
     `;
 
     return execute(code, '/path/to/foo.js', {});
@@ -36,8 +40,10 @@ describe('execute', () => {
   it('should be able to require relative to the filepath', () => {
     const filepath = path.join(__dirname, 'integration', 'readme-example', 'input');
     const code = stripIndent`
-      const val = require('./module');
-      expect(val).to.equal('foo');
+      (() => {
+        const val = require('./module');
+        expect(val).to.equal('foo');
+      })();
     `;
 
     return execute(code, filepath, {});
@@ -45,12 +51,14 @@ describe('execute', () => {
 
   it('should have access to all the global you expect', () => {
     const code = stripIndent`
-      expect(global).to.exist;
-      expect(process).to.exist;
-      expect(setTimeout).to.exist;
-      expect(Buffer).to.exist;
-      expect(Promise).to.exist;
-      // etc..
+      (() => {
+        expect(global).to.exist;
+        expect(process).to.exist;
+        expect(setTimeout).to.exist;
+        expect(Buffer).to.exist;
+        expect(Promise).to.exist;
+        // etc..
+      })();
     `;
 
     return execute(code, '/path/to/foo.js', {});
@@ -58,8 +66,10 @@ describe('execute', () => {
 
   it('should be possible to set or override globals', () => {
     const code = stripIndent`
-      expect(bar).to.exist;
-      expect(process).to.equal('foo');
+      (() => {
+        expect(bar).to.exist;
+        expect(process).to.equal('foo');
+      })();
     `;
 
     return execute(code, '/path/to/foo.js', {
@@ -70,8 +80,10 @@ describe('execute', () => {
 
   it('should not be possible to override "module arguments"', () => {
     const code = stripIndent`
-      expect(__dirname).to.equal('/path/to');
-      expect(require).to.be.a('function');
+      (() => {
+        expect(__dirname).to.equal('/path/to');
+        expect(require).to.be.a('function');
+      })();
     `;
 
     return execute(code, '/path/to/foo.js', {

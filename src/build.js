@@ -41,7 +41,7 @@ export default function build(ast) {
     .join('\n');
 
   const code = `
-    (async ($doc) => {
+    (async function $fn($doc) {
       ${content};
       return $doc.join('')
     })([]);

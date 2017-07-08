@@ -38,7 +38,7 @@ export default () => new Promise((res) => {
   });
 
   suite.on('complete', () => {
-    console.log('Fastest builder is ' + suite.filter('fastest').map('name'));
+    console.log('Fastest executer is ' + suite.filter('fastest').map('name'));
     res();
   });
 
